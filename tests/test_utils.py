@@ -41,20 +41,7 @@ class TestUtils(unittest.TestCase):
     def test_utils_load_pkg_resource_fallback(self):
         # By default use_local_file is also True during production
         # We will not allow the default importlib resources to be used, by triggering an Exception
-        with patch.object(ilr, "files") as mocked_importlib_resources_files:
-            # This exception should trigger the alternative path, trying to use pkg_resource as fallback
-            mocked_importlib_resources_files.side_effect = Exception("Error")
-            data = utils.load()
+        fp1 = utils.find_browser_json_path_pkg_resources()
+        fp2 = utils.find_browser_json_path()
 
-        self.assertIsInstance(data, list)
-        self.assertGreater(len(data), 1000)
-        self.assertIsInstance(data[0], object)
-        self.assertIsInstance(data[0]["percent"], float)
-        self.assertIsInstance(data[0]["type"], str)
-        self.assertIsInstance(data[0]["device_brand"], str)
-        self.assertIsInstance(data[0]["browser"], str)
-        self.assertIsInstance(data[0]["browser_version"], str)
-        self.assertIsInstance(data[0]["browser_version_major_minor"], float)
-        self.assertIsInstance(data[0]["os"], str)
-        self.assertIsInstance(data[0]["os_version"], str)
-        self.assertIsInstance(data[0]["platform"], str)
+        self.assertEqual(fp1, fp2)

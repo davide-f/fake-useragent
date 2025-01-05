@@ -41,6 +41,26 @@ class BrowserUserAgentData(TypedDict):
     """Platform for the user agent (eg. Linux armv81)."""
 
 
+def find_browser_json_path_pkg_resources() -> Path:
+    """Find the path to the browsers.json file using pkg_resources package.
+
+    Returns:
+        Path: Path to the browsers.json file.
+
+    Raises:
+        FakeUserAgentError: If unable to find the file.
+    """
+    try:
+        from pkg_resources import resource_filename
+
+        return Path(resource_filename("fake_useragent", "data/browsers.jsonl"))
+    except Exception as exc2:
+        logger.warning(
+            "Could not find local data/jsonl file using pkg-resource.",
+            exc_info=exc2,
+        )
+        raise FakeUserAgentError("Could not locate browsers.jsonl file") from exc2
+
 def find_browser_json_path() -> Path:
     """Find the path to the browsers.json file.
 
@@ -58,16 +78,7 @@ def find_browser_json_path() -> Path:
             "Unable to find local data/jsonl file using importlib-resources. Try pkg-resource.",
             exc_info=exc,
         )
-        try:
-            from pkg_resources import resource_filename
-
-            return Path(resource_filename("fake_useragent", "data/browsers.jsonl"))
-        except Exception as exc2:
-            logger.warning(
-                "Could not find local data/jsonl file using pkg-resource.",
-                exc_info=exc2,
-            )
-            raise FakeUserAgentError("Could not locate browsers.jsonl file") from exc2
+        return find_browser_json_path_pkg_resources()
 
 
 def load() -> list[BrowserUserAgentData]:
