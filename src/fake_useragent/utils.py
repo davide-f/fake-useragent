@@ -61,6 +61,7 @@ def find_browser_json_path_pkg_resources() -> Path:
         )
         raise FakeUserAgentError("Could not locate browsers.jsonl file") from exc2
 
+
 def find_browser_json_path() -> Path:
     """Find the path to the browsers.json file.
 
